@@ -4,6 +4,7 @@
 local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
 
 -- Ожидание загрузки игрока
 local player = Players.LocalPlayer
@@ -19,8 +20,8 @@ ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 -- Основной фрейм
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
-MainFrame.Size = UDim2.new(0, 350, 0, 220)
-MainFrame.Position = UDim2.new(0.5, -175, 0.5, -110)
+MainFrame.Size = UDim2.new(0, 350, 0, 250)
+MainFrame.Position = UDim2.new(0.5, -175, 0.5, -125)
 MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
 MainFrame.BorderSizePixel = 0
@@ -38,28 +39,37 @@ UIStroke.Color = Color3.fromRGB(60, 60, 80)
 UIStroke.Thickness = 2
 UIStroke.Parent = MainFrame
 
--- Заголовок
-local Title = Instance.new("TextLabel")
+-- Заголовок с кнопками
+local Title = Instance.new("Frame")
 Title.Name = "Title"
 Title.Size = UDim2.new(1, 0, 0, 50)
 Title.Position = UDim2.new(0, 0, 0, 0)
 Title.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
 Title.BorderSizePixel = 0
-Title.Text = "⚡ SPEED INJECTOR"
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.TextSize = 20
-Title.Font = Enum.Font.GothamBold
 Title.Parent = MainFrame
 
 local TitleCorner = Instance.new("UICorner")
 TitleCorner.CornerRadius = UDim.new(0, 12)
 TitleCorner.Parent = Title
 
+-- Текст заголовка
+local TitleText = Instance.new("TextLabel")
+TitleText.Name = "TitleText"
+TitleText.Size = UDim2.new(1, -80, 1, 0)
+TitleText.Position = UDim2.new(0, 40, 0, 0)
+TitleText.BackgroundTransparency = 1
+TitleText.Text = "⚡ SPEED INJECTOR"
+TitleText.TextColor3 = Color3.fromRGB(255, 255, 255)
+TitleText.TextSize = 20
+TitleText.Font = Enum.Font.GothamBold
+TitleText.TextXAlignment = Enum.TextXAlignment.Left
+TitleText.Parent = Title
+
 -- Иконка скорости
 local SpeedIcon = Instance.new("ImageLabel")
 SpeedIcon.Name = "SpeedIcon"
 SpeedIcon.Size = UDim2.new(0, 24, 0, 24)
-SpeedIcon.Position = UDim2.new(0, 15, 0, 13)
+SpeedIcon.Position = UDim2.new(0, 10, 0, 13)
 SpeedIcon.BackgroundTransparency = 1
 SpeedIcon.Image = "rbxassetid://3926305904"
 SpeedIcon.ImageRectOffset = Vector2.new(124, 364)
@@ -67,10 +77,46 @@ SpeedIcon.ImageRectSize = Vector2.new(36, 36)
 SpeedIcon.ImageColor3 = Color3.fromRGB(0, 170, 255)
 SpeedIcon.Parent = Title
 
+-- Кнопка закрытия
+local CloseButton = Instance.new("TextButton")
+CloseButton.Name = "CloseButton"
+CloseButton.Size = UDim2.new(0, 30, 0, 30)
+CloseButton.Position = UDim2.new(1, -35, 0.5, -15)
+CloseButton.AnchorPoint = Vector2.new(1, 0.5)
+CloseButton.BackgroundColor3 = Color3.fromRGB(200, 60, 60)
+CloseButton.BorderSizePixel = 0
+CloseButton.Text = "×"
+CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseButton.TextSize = 20
+CloseButton.Font = Enum.Font.GothamBold
+CloseButton.Parent = Title
+
+local CloseCorner = Instance.new("UICorner")
+CloseCorner.CornerRadius = UDim.new(0, 6)
+CloseCorner.Parent = CloseButton
+
+-- Кнопка сворачивания
+local MinimizeButton = Instance.new("TextButton")
+MinimizeButton.Name = "MinimizeButton"
+MinimizeButton.Size = UDim2.new(0, 30, 0, 30)
+MinimizeButton.Position = UDim2.new(1, -70, 0.5, -15)
+MinimizeButton.AnchorPoint = Vector2.new(1, 0.5)
+MinimizeButton.BackgroundColor3 = Color3.fromRGB(80, 80, 100)
+MinimizeButton.BorderSizePixel = 0
+MinimizeButton.Text = "_"
+MinimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+MinimizeButton.TextSize = 16
+MinimizeButton.Font = Enum.Font.GothamBold
+MinimizeButton.Parent = Title
+
+local MinimizeCorner = Instance.new("UICorner")
+MinimizeCorner.CornerRadius = UDim.new(0, 6)
+MinimizeCorner.Parent = MinimizeButton
+
 -- Контейнер для настроек
 local SettingsFrame = Instance.new("Frame")
 SettingsFrame.Name = "SettingsFrame"
-SettingsFrame.Size = UDim2.new(1, -30, 0, 150)
+SettingsFrame.Size = UDim2.new(1, -30, 0, 180)
 SettingsFrame.Position = UDim2.new(0, 15, 0, 60)
 SettingsFrame.BackgroundTransparency = 1
 SettingsFrame.Parent = MainFrame
@@ -145,11 +191,47 @@ local ValueCorner = Instance.new("UICorner")
 ValueCorner.CornerRadius = UDim.new(0, 6)
 ValueCorner.Parent = ValueLabel
 
+-- Секция спиннера
+local SpinSection = Instance.new("Frame")
+SpinSection.Name = "SpinSection"
+SpinSection.Size = UDim2.new(1, 0, 0, 40)
+SpinSection.Position = UDim2.new(0, 0, 0, 100)
+SpinSection.BackgroundTransparency = 1
+SpinSection.Parent = SettingsFrame
+
+local SpinLabel = Instance.new("TextLabel")
+SpinLabel.Name = "SpinLabel"
+SpinLabel.Size = UDim2.new(0, 80, 1, 0)
+SpinLabel.Position = UDim2.new(0, 0, 0, 0)
+SpinLabel.BackgroundTransparency = 1
+SpinLabel.Text = "SPIN:"
+SpinLabel.TextColor3 = Color3.fromRGB(200, 200, 220)
+SpinLabel.TextSize = 16
+SpinLabel.Font = Enum.Font.Gotham
+SpinLabel.TextXAlignment = Enum.TextXAlignment.Left
+SpinLabel.Parent = SpinSection
+
+local SpinButton = Instance.new("TextButton")
+SpinButton.Name = "SpinButton"
+SpinButton.Size = UDim2.new(0, 80, 1, 0)
+SpinButton.Position = UDim2.new(0, 90, 0, 0)
+SpinButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+SpinButton.BorderSizePixel = 0
+SpinButton.Text = "ENABLE"
+SpinButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+SpinButton.TextSize = 14
+SpinButton.Font = Enum.Font.GothamBold
+SpinButton.Parent = SpinSection
+
+local SpinCorner = Instance.new("UICorner")
+SpinCorner.CornerRadius = UDim.new(0, 6)
+SpinCorner.Parent = SpinButton
+
 -- Кнопка применения
 local ApplyButton = Instance.new("TextButton")
 ApplyButton.Name = "ApplyButton"
-ApplyButton.Size = UDim2.new(1, -30, 0, 40)
-ApplyButton.Position = UDim2.new(0, 15, 1, -50)
+ApplyButton.Size = UDim2.new(1, 0, 0, 40)
+ApplyButton.Position = UDim2.new(0, 0, 1, -50)
 ApplyButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
 ApplyButton.BorderSizePixel = 0
 ApplyButton.Text = "APPLY SPEED"
@@ -162,20 +244,29 @@ local ApplyCorner = Instance.new("UICorner")
 ApplyCorner.CornerRadius = UDim.new(0, 8)
 ApplyCorner.Parent = ApplyButton
 
--- Анимация кнопки
-ApplyButton.MouseEnter:Connect(function()
-    TweenService:Create(ApplyButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(20, 150, 230)}):Play()
-end)
+-- Анимации кнопок
+local function setupButtonHover(button, normalColor, hoverColor)
+    button.MouseEnter:Connect(function()
+        TweenService:Create(button, TweenInfo.new(0.2), {BackgroundColor3 = hoverColor}):Play()
+    end)
+    
+    button.MouseLeave:Connect(function()
+        TweenService:Create(button, TweenInfo.new(0.2), {BackgroundColor3 = normalColor}):Play()
+    end)
+end
 
-ApplyButton.MouseLeave:Connect(function()
-    TweenService:Create(ApplyButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(0, 170, 255)}):Play()
-end)
+setupButtonHover(ApplyButton, Color3.fromRGB(0, 170, 255), Color3.fromRGB(20, 150, 230))
+setupButtonHover(SpinButton, Color3.fromRGB(0, 170, 255), Color3.fromRGB(20, 150, 230))
+setupButtonHover(CloseButton, Color3.fromRGB(200, 60, 60), Color3.fromRGB(220, 80, 80))
+setupButtonHover(MinimizeButton, Color3.fromRGB(80, 80, 100), Color3.fromRGB(100, 100, 120))
 
 -- Переменные
 local minValue = 0
 local maxValue = 5000
 local currentValue = 16
 local isSliding = false
+local spinEnabled = false
+local spinConnection = nil
 
 -- Функция обновления слайдера
 local function updateSlider(value)
@@ -187,6 +278,41 @@ local function updateSlider(value)
     
     ValueLabel.Text = tostring(math.floor(currentValue))
     SpeedLabel.Text = "SPEED: " .. math.floor(currentValue)
+end
+
+-- Функция спиннера
+local function toggleSpin()
+    spinEnabled = not spinEnabled
+    
+    if spinEnabled then
+        SpinButton.Text = "DISABLE"
+        SpinButton.BackgroundColor3 = Color3.fromRGB(255, 80, 80)
+        
+        -- Создаем спиннер
+        if spinConnection then
+            spinConnection:Disconnect()
+        end
+        
+        spinConnection = RunService.Heartbeat:Connect(function(deltaTime)
+            if character and character:FindFirstChild("HumanoidRootPart") then
+                local rootPart = character.HumanoidRootPart
+                local currentRotation = rootPart.Orientation
+                rootPart.Orientation = Vector3.new(
+                    currentRotation.X,
+                    currentRotation.Y + (deltaTime * 720), -- 2 оборота в секунду
+                    currentRotation.Z
+                )
+            end
+        end)
+    else
+        SpinButton.Text = "ENABLE"
+        SpinButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+        
+        if spinConnection then
+            spinConnection:Disconnect()
+            spinConnection = nil
+        end
+    end
 end
 
 -- Обработка слайдера
@@ -232,8 +358,34 @@ ApplyButton.MouseButton1Click:Connect(function()
     TweenService:Create(ApplyButton, TweenInfo.new(0.3), {BackgroundColor3 = originalColor}):Play()
 end)
 
--- Инициализация
-updateSlider(16)
+-- Переключение спиннера
+SpinButton.MouseButton1Click:Connect(function()
+    toggleSpin()
+end)
+
+-- Закрытие UI
+CloseButton.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
+    if spinConnection then
+        spinConnection:Disconnect()
+    end
+end)
+
+-- Сворачивание UI
+local isMinimized = false
+MinimizeButton.MouseButton1Click:Connect(function()
+    isMinimized = not isMinimized
+    
+    if isMinimized then
+        TweenService:Create(SettingsFrame, TweenInfo.new(0.3), {Size = UDim2.new(1, -30, 0, 0)}):Play()
+        TweenService:Create(MainFrame, TweenInfo.new(0.3), {Size = UDim2.new(0, 350, 0, 50)}):Play()
+        MinimizeButton.Text = "+"
+    else
+        TweenService:Create(SettingsFrame, TweenInfo.new(0.3), {Size = UDim2.new(1, -30, 0, 180)}):Play()
+        TweenService:Create(MainFrame, TweenInfo.new(0.3), {Size = UDim2.new(0, 350, 0, 250)}):Play()
+        MinimizeButton.Text = "_"
+    end
+end)
 
 -- Перетаскивание окна
 local dragStart = nil
@@ -258,5 +410,8 @@ Title.InputChanged:Connect(function(input)
                                       startPos.Y.Scale, startPos.Y.Offset + delta.Y)
     end
 end)
+
+-- Инициализация
+updateSlider(16)
 
 print("⚡ Speed Injector loaded successfully! Current speed: " .. currentValue)
